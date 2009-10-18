@@ -1,0 +1,10 @@
+*.orig
+*.rej
+*~
+*.o
+*.log
+*.db
+backup
+myconfig.rb
+public/avatars/*
+public/thumbs/*
