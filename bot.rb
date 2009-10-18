@@ -67,6 +67,7 @@ module PaaS
       body = "\n#{NAME} v#{VERSION}\nCommands:\n"
       body += "HELP, H, help, ? : List all local commands\n"
       body += "PING, P, ping : Connection test\n"
+      body += "ONLINE, O, online : Online users list\n"
       body += "STAT[US], S, stat[us] [JID] : get JID status - 'away' etc.\n"
       body += "LOGIN, L, login : register in the system\n"
       body += "NICK, N, nick [name] : change/show your nick (2-16 chars, [A-Za-z0-9_])\n"
@@ -140,6 +141,17 @@ module PaaS
             when "LOGIN", "L", "login":
               @@xmpp.ask_for_auth(msg.from)
               Bot.announce(from, "Please accept the authorization request.")
+            when "ONLINE", "O", "online":
+              list = "Online users:\n"
+              # last presences for every user
+              DB[:presences].order(:created.desc).group(:user_id).each do |p|
+                if p[:status] == 'online'
+                  list += DB[:users].filter(:id => p[:user_id]).first[:nick]
+                  list += " : #{p[:message]}" unless p[:message].empty?
+                  list += "\n"
+                end
+              end
+              Bot.announce(from, list)
             when "NICK", "N", "nick":
               begin
                 user = DB[:users].filter(:jid => from)
