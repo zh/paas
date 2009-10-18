@@ -10,7 +10,6 @@ begin
   require "sequel"
   require "myconfig"
   require "global"
-#  require "plugins"
 rescue LoadError
   puts "[E] --- json, sequel, eventmachine, xmpp4r-simple are required ---"
   exit
