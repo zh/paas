@@ -53,4 +53,4 @@
  * __LOGIN, L, login__ : register in the system
  * __NICK, N, nick [name]__ : change/show your nick (2-16 chars, [A-Za-z0-9_])
 
-You can make your own install, or use the __status@zhware.net_ bot and [http://status.zhware.net/](http://status.zhware.net/) URL for API calls and to see the results.
+You can make your own install, or use the __status@zhware.net__ bot and [http://status.zhware.net/](http://status.zhware.net/) URL for API calls and to see the results.
