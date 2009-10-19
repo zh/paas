@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Presences Stream</title>
+</head>
+<body>
+<div id="entries">
+<ul>
+<% @presences.each do |p| %>
+<li>
+<img src="/images/<%= p[:status] %>.png" title="<%= p[:status] %>" />
+<% unless p[:message].empty? %><%= p[:message] %><% end %>
+<small title="<%= Time.parse(p[:created].to_s).to_formatted_s(:custom) %>">
+<%= Time.parse(p[:created].to_s).time_since(Time.now) %> ago</small>
+</li>
+<% end %>
+</ul>
+</div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 module PaaS
   VERSION = "x.y.z".freeze
   NAME = "PaaS".freeze
+  DEBUG = true
 
   #-- DB - micros
   DB_FILE = "paas.db".freeze
@@ -10,15 +11,11 @@ module PaaS
   DOMAIN = "example.com".freeze
   BASE = "/".freeze
   HTTPBASE = "http://#{DOMAIN}#{BASE}".freeze
-  ASSETS = "http://#{DOMAIN}:8000".freeze
-  COOKIE = "hash".freeze
-  PAGE = 20
-  API_PAGE = 10
-  RSS_PAGE = 10
+  PUSHUB = "https://pubsubhubbub.appspot.com/".freeze
   
   #-- XMPP - bot 
   USER = "bot@example.com".freeze
   PASS = "SomeSecret".freeze
   MASTERS = ["master@example.com", "god@example.com"].freeze
-  STATUS = ["available", "away", "chat", "dnd", "offline", "online", "unavailable", "xa"].freeze
+  STATUS = ["available", "away", "chat", "dnd", "offline", "online", "unavailable", "xa", "unknown"].freeze
 end
