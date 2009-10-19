@@ -52,7 +52,7 @@ module PaaS
         content_type 'application/atom+xml', :charset => 'utf-8'
         # cache for 30 sec
         headers 'Cache-Control' => 'max-age=30, public',
-                'Expires' => (Time.now + 30).utc.rfc2822
+                'Expires' => (Time.now + 30).httpdate
         feed = Atom::Feed.new do |f|
           f.title   = "#{params[:nick]}'s presences feed"
           f.id      = "urn:uuid:"+Digest::SHA1.hexdigest("--#{PaaS::HTTPBASE}--#{PaaS::SALT}")
@@ -96,7 +96,7 @@ module PaaS
       content_type 'application/json; charset=utf-8'
       # cache for 30 sec.
       headers 'Cache-Control' => 'max-age=30, public',
-              'Expires' => (Time.now + 30).utc.rfc2822
+              'Expires' => (Time.now + 30).httpdate
       list = []
       DB[:presences].order(:created.desc).limit(10).each do |p|
         user = DB[:users].filter(:id => p[:user_id]).first
@@ -119,14 +119,18 @@ module PaaS
 
 
     # mostly for demo purposes
-    get '/stream' do
-      erb :stream
+    get '/' do
+      headers 'Cache-Control' => 'max-age=120, public',
+              'Expires' => (Time.now + 120).httpdate
+      erb :index
     end
 
     get '/user/:nick/?' do
       begin
-        user = DB[:users].filter(:nick => params[:nick]).first
-        @presences = DB[:presences].where(:user_id => user[:id]).order(:created.desc).limit(10)
+       headers 'Cache-Control' => 'max-age=120, public',
+               'Expires' => (Time.now + 120).httpdate
+        @user = DB[:users].filter(:nick => params[:nick]).first
+        @presences = DB[:presences].where(:user_id => @user[:id]).order(:created.desc).limit(10)
         erb :user
       rescue
         throw :halt, [404, "Not Found"]

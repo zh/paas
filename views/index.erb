@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Presences Stream</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <script type="text/javascript" charset="utf-8" src="/agg.js"></script>
+</head>
+<body>
+<h2 id="what_is_paas">What is PaaS</h2>
+
+<p>Presence-As-A-Service (PaaS) is using an <a href='http://xmpp.org/rfcs/rfc3921.html#presence'>XMPP presences</a> for microblogging, online status displaying etc.</p>
+
+<p>This application was build by <a href="http://zhware.net">Stoyan Zhekov</a>. 
+The code can be found on <a href="http://github.com/zh/paas">GitHub</a>.</p>
+
+<h2 id="why">Why?</h2>
+
+<ul>
+<li>Because <a href='http://code.google.com/appengine/docs/python/xmpp/overview.html#Google_Talk_User_Status'>Google XMPP im
+plementation sucks</a></li>
+
+<li>Because XMPP presences is uncomplete (<a href='http://www.process-one.net/en/blogs/article/timestamp_on_presence_tag/'>m
+issing timestamp</a>)</li>
+
+<li>Need it for other services (<a href='http://reatiwe.appspot.com/'>ReaTiWe</a>)</li>
+</ul>
+
+<p>See the <a href="/readme.html">PaaS help page</a> for more information on the usage</p>
+
+<h2 id="stream">Latest presence changes</h2>
+<div id="entries" />
+
+</body>
+</html>

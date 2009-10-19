@@ -1,7 +1,6 @@
 ## What is PaaS
 
-Presence-As-A-Service (PaaS) is using an [XMPP presences](http://xmpp.org/rfcs/rfc3921.html#presence) 
-for microblogging, online status displaying etc.
+[Presence-As-A-Service (PaaS)](http://status.zhware.net/) is using [XMPP presence stanzas](http://xmpp.org/rfcs/rfc3921.html#presence) for microblogging, online status displaying etc.
 
 
 ## Why?
@@ -53,3 +52,5 @@ for microblogging, online status displaying etc.
  * __STAT[US], S, stat[us] [JID]__ : get JID status - 'away' etc.
  * __LOGIN, L, login__ : register in the system
  * __NICK, N, nick [name]__ : change/show your nick (2-16 chars, [A-Za-z0-9_])
+
+You can make your own install, or use the __status@zhware.net_ bot and [http://status.zhware.net/](http://status.zhware.net/) URL for API calls and to see the results.

@@ -23,9 +23,8 @@ function gotStuff(status, text) {
   } else {
     content += "<ul>\n";	  
     for (var i = 0; i < items.length; ++i) {
-      content += '<li>'
-      content += '<img src="/images/' + items[i].status + '.png" title="' + 
-                 items[i].status + '" />';
+      content += '<li class="lien" style="background-image: url(/images/' + 
+                 items[i].status + '.png)"' + 'title="' + items[i].status + '">';
       content += '<big><a href="/user/' + items[i].nick + '">' + 
                  items[i].nick + '</a></big>: ';
       if (items[i].message != '') {

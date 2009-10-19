@@ -3,14 +3,20 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>Presences Stream</title>
+  <link href="<%= PaaS::HTTPBASE %>atom/<%= @user[:nick] %>" rel="alternate" type="application/atom+xml"/>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 <body>
+<h2>Latest <%= @user[:nick] %> presence changes</h2>
 <div id="entries">
 <ul>
 <% @presences.each do |p| %>
-<li>
-<img src="/images/<%= p[:status] %>.png" title="<%= p[:status] %>" />
-<% unless p[:message].empty? %><%= p[:message] %><% end %>
+<li class="lien" style="background-image: url(/images/<%= p[:status] %>.png)" title="<%= p[:status] %>">
+<% if p[:message].empty? %>
+<%= p[:status] %>
+<% else %>
+<%= p[:message] %>
+<% end %>
 <small title="<%= Time.parse(p[:created].to_s).to_formatted_s(:custom) %>">
 <%= Time.parse(p[:created].to_s).time_since(Time.now) %> ago</small>
 </li>

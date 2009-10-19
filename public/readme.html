@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
+    "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
+<html xmlns:svg='http://www.w3.org/2000/svg' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'>
+<head><meta content='application/xhtml+xml;charset=utf-8' http-equiv='Content-type' /><title></title></head>
+<body>
+<h2 id='what_is_paas'>What is PaaS</h2>
+
+<p><a href="http://status.zhware.net/">Presence-As-A-Service (PaaS)</a> is using an <a href="http://xmpp.org/rfcs/rfc3921.html#presence">XMPP presences</a> for microblogging, online status displaying etc.</p>
+
+<h2 id='how'>Installation and usage</h2>
+
+<h3 id='install'>Install</h3>
+
+<ul>
+<li>Needed gems: eventmachine, xmpp4r-simple, json, ratom, httpclient, sequel, sinatra</li>
+
+<li>Copy <strong>myconfig.rb.dist</strong> to <strong>myconfig.rb</strong> and adjust your settings</li>
+
+<li>Start the bot (this will create also database <span>sqlite3</span>, if missing): <strong>ruby ./bot.rb</strong></li>
+
+<li>Start the API:
+
+<ul>
+<li>via <a href='http://wiki.github.com/rack/rack/tutorial-rackup-howto'>rackup</a>: <strong>rackup -p 8080</strong></li>
+
+<li>standalone: <strong>ruby ./api.rb -p 8080</strong></li>
+</ul>
+</li>
+</ul>
+
+<h3 id='usage'>Usage</h3>
+
+<ul>
+<li>Add the bot (or use <strong>status@zhware.net</strong> with the current installation) to your roster</li>
+
+<li><strong>PING</strong> to test the connection</li>
+
+<li><strong>HELP</strong> to see the available bot commands</li>
+
+<li>Send <strong>LOGIN</strong> command to register (and accept the authorization request)</li>
+
+<li>Change your nick - <strong>NICK &#8230;</strong> to hide your real JID</li>
+
+<li>Enable PuSH publishing - <strong>ON</strong></li>
+
+<li>All your presence changes will be saved - time, status, message</li>
+
+<li>To trac only some presences (extended away - XA) - <strong>QUIET</strong></li>
+</ul>
+
+<h2 id='what_youve_get'>What you&#8217;ve get?</h2>
+
+<h3 id='web_http_services'>Web (HTTP services)</h3>
+
+<ul>
+<li><strong>/last/:nick/:type</strong> - Text/image (.png) user status (status, message, timestamp)</li>
+
+<li><strong>/atom/:nick</strong> - Atom feed with latest 10 presences (pinging PuSH hub on update)</li>
+
+<li><strong>/json</strong> (optional <strong>?callback=&#8230;</strong> parameter) JSON/JSONP with latest 10 presences</li>
+
+<li><strong>/stream</strong> and <strong>/user/:nick</strong> - demo services</li>
+</ul>
+
+<h3 id='xmpp_bot_commands'>XMPP (bot commands)</h3>
+
+<ul>
+<li><strong>HELP, H, help, ?</strong> : List all local commands</li>
+
+<li><strong>PING, P, ping</strong> : Connection test</li>
+
+<li><strong>ONLINE, O, online</strong> : Online users list</li>
+
+<li><strong>ON/OFF, on/off</strong> : Enable/disable presences sharing</li>
+
+<li><strong>QUIET/VERBOSE, quiet/verbose</strong> : Trac all or only XA presences</li>
+
+<li><strong>STAT<span>US</span>, S, stat<span>us</span></strong> : get JID status - &#8216;away&#8217; etc.</li>
+
+<li><strong>LOGIN, L, login</strong> : register in the system</li>
+
+<li><strong>NICK, N, nick <span>name</span></strong> : change/show your nick (2-16 chars, <span>A-Za-z0-9_</span>)</li>
+</ul>
+</body></html>

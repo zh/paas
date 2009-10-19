@@ -1,0 +1,3 @@
+#entries li div { overflow-x: auto; overflow-y: hidden; }
+#entries .lien { padding-left: 20px; background-repeat: no-repeat; }
+#entries ul { list-style-type: none; }
