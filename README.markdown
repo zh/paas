@@ -6,7 +6,7 @@
 ## Why?
 
  * Because [Google XMPP implementation sucks](http://code.google.com/appengine/docs/python/xmpp/overview.html#Google_Talk_User_Status)
- * Because XMPP presences is uncomplete ([missing timestamp](http://www.process-one.net/en/blogs/article/timestamp_on_presence_tag/))
+ * Because XMPP presences are uncomplete ([missing timestamp](http://www.process-one.net/en/blogs/article/timestamp_on_presence_tag/))
  * Need it for other services ([ReaTiWe](http://reatiwe.appspot.com/))
 
 
