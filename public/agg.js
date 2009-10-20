@@ -21,10 +21,14 @@ function gotStuff(status, text) {
   if (items.length == 0) {
     content = "Nothing yet.\n"
   } else {
+    var step = 90 / items.length
     content += "<ul>\n";	  
     for (var i = 0; i < items.length; ++i) {
+      var value = 100 - (step * i);
+      var opa = value == 100 ? "1" : "0." + parseInt(value);
       content += '<li class="lien" style="background-image: url(/images/' + 
                  items[i].status + '.png)"' + 'title="' + items[i].status + '">';
+      content += '<span style="opacity: ' + opa + '">';
       content += '<big><a href="/user/' + items[i].nick + '">' + 
                  items[i].nick + '</a></big>: ';
       if (items[i].message != '') {
@@ -33,7 +37,8 @@ function gotStuff(status, text) {
       content += ' <small title="' + items[i].time  + 
                  '">' + items[i].since + " ago</small></li>\n";
     }
-    content += "</ul>\n";	  
+    content += "</span></ul>\n";
+    
   }
 
   document.getElementById("entries").innerHTML = content;

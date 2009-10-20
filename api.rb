@@ -70,7 +70,7 @@ module PaaS
                                      :href => "#{PaaS::HTTPBASE}nick/#{params[:nick]}")
           f.links  << Atom::Link.new(:rel => 'hub',
                                      :href => PaaS::PUSHUB)
-          DB[:presences].where(:user_id => user[:id]).order(:created.desc).limit(10).each do |p|
+          DB[:presences].where(:user_id => user[:id]).order(:created.desc).limit(PaaS::FEED_PAGE).each do |p|
             guid = Digest::SHA1.hexdigest("--#{p[:id]}--#{PaaS::SALT}")
             f.entries << Atom::Entry.new do |e|
               e.id         = "urn:uuid:#{guid}"
@@ -98,7 +98,7 @@ module PaaS
       headers 'Cache-Control' => 'max-age=30, public',
               'Expires' => (Time.now + 30).httpdate
       list = []
-      DB[:presences].order(:created.desc).limit(10).each do |p|
+      DB[:presences].order(:created.desc).limit(PaaS::PAGE).each do |p|
         user = DB[:users].filter(:id => p[:user_id]).first
         if user
           tm = Time.parse(p[:created].to_s)
@@ -130,7 +130,7 @@ module PaaS
        headers 'Cache-Control' => 'max-age=120, public',
                'Expires' => (Time.now + 120).httpdate
         @user = DB[:users].filter(:nick => params[:nick]).first
-        @presences = DB[:presences].where(:user_id => @user[:id]).order(:created.desc).limit(10)
+        @presences = DB[:presences].where(:user_id => @user[:id]).order(:created.desc).limit(PaaS::PAGE)
         erb :user
       rescue
         throw :halt, [404, "Not Found"]

@@ -12,6 +12,8 @@ module PaaS
   BASE = "/".freeze
   HTTPBASE = "http://#{DOMAIN}#{BASE}".freeze
   PUSHUB = "https://pubsubhubbub.appspot.com/".freeze
+  PAGE = 20
+  FEED_PAGE = 10
   
   #-- XMPP - bot 
   USER = "bot@example.com".freeze
