@@ -23,9 +23,15 @@ module PaaS
       DB = Sequel.connect(ENV['DATABASE_URL'] || "sqlite://#{PaaS::DB_FILE}")
     end
 
-    get '/last/:nick/:type/?' do
+
+    get '/last/:nick_or_jid/:type/?' do
       begin
-        user = DB[:users].filter(:nick => params[:nick]).first
+        # user by JID or nick
+        if params[:nick_or_jid].include?('@')
+          user = DB[:users].filter(:jid => params[:nick_or_jid]).first
+        else
+          user = DB[:users].filter(:nick => params[:nick_or_jid]).first
+        end
         presence = DB[:presences].filter(:user_id => user[:id]).order(:created).last
         if params[:type] == 'image'
           content_type 'image/png'
@@ -36,25 +42,39 @@ module PaaS
           tm = presence[:created].to_s
           text = {
             :time => Time.parse(tm).getgm.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            :since => Time.parse(tm).time_since(Time.now),
             :status => presence[:status]
           }
           text[:message] = presence[:message] unless presence[:message].empty?
           text.to_json
         end
       rescue
-        throw :halt, [404, "Not Found"]
+        if params[:type] == 'image'
+          File.open(File.join("public","images","unknown.png"))
+        else
+          text = {
+            :time => Time.now.getgm.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            :since => Time.now.time_since(Time.now),
+            :status => "unknown"
+          }.to_json
+        end
       end
     end
 
-    get '/atom/:nick/?' do
+    get '/atom/:nick_or_jid/?' do
       begin
-        user = DB[:users].filter(:nick => params[:nick]).first
+        # user by JID or nick
+        if params[:nick_or_jid].include?('@')
+          user = DB[:users].filter(:jid => params[:nick_or_jid]).first
+        else
+          user = DB[:users].filter(:nick => params[:nick_or_jid]).first
+        end
         content_type 'application/atom+xml', :charset => 'utf-8'
         # cache for 30 sec
         headers 'Cache-Control' => 'max-age=30, public',
                 'Expires' => (Time.now + 30).httpdate
         feed = Atom::Feed.new do |f|
-          f.title   = "#{params[:nick]}'s presences feed"
+          f.title   = "#{params[:nick_or_jid]}'s presences feed"
           f.id      = "urn:uuid:"+Digest::SHA1.hexdigest("--#{PaaS::HTTPBASE}--#{PaaS::SALT}")
           if DB[:presences].count > 0
             tm = Time.parse(DB[:presences].order(:created.desc).last[:created].to_s)
@@ -62,24 +82,24 @@ module PaaS
             tm = Time.now
           end
           f.updated = tm.getgm.strftime("%Y-%m-%dT%H:%M:%SZ")
-          f.authors << Atom::Person.new(:name => params[:nick])
+          f.authors << Atom::Person.new(:name => params[:nick_or_jid])
           f.links  << Atom::Link.new(:rel=>"self",
-                                     :href=>"#{PaaS::HTTPBASE}atom/#{params[:nick]}",
+                                     :href=>"#{PaaS::HTTPBASE}atom/#{params[:nick_or_jid]}",
                                      :type=>"application/atom+xml")
           f.links  << Atom::Link.new(:rel => 'alternate',
-                                     :href => "#{PaaS::HTTPBASE}nick/#{params[:nick]}")
+                                     :href => "#{PaaS::HTTPBASE}user/#{user[:nick]}")
           f.links  << Atom::Link.new(:rel => 'hub',
                                      :href => PaaS::PUSHUB)
           DB[:presences].where(:user_id => user[:id]).order(:created.desc).limit(PaaS::FEED_PAGE).each do |p|
             guid = Digest::SHA1.hexdigest("--#{p[:id]}--#{PaaS::SALT}")
             f.entries << Atom::Entry.new do |e|
               e.id         = "urn:uuid:#{guid}"
-              e.authors   << Atom::Person.new(:name => params[:nick])
+              e.authors   << Atom::Person.new(:name => params[:nick_or_jid])
               e.title      = p[:status]
               e.updated    = p[:created]
               e.published  = p[:created]
               e.links     << Atom::Link.new(:rel => 'alternate', 
-                                    :href => "#{PaaS::HTTPBASE}last/#{params[:nick]}/text")
+                                    :href => "#{PaaS::HTTPBASE}last/#{params[:nick_or_jid]}/text")
               e.content    = p[:message].empty? ? p[:status] : p[:message]
             end
           end
