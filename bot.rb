@@ -228,7 +228,7 @@ module PaaS
                     list += " quiet" if user[:quiet]
                     list += " ]"
                   end
-                  list += "\n"
+                  list += " #{Time.parse(p[:created].to_s).time_since(Time.now)} ago\n"
                 end
               end
               Bot.announce(from, [list])
@@ -261,6 +261,7 @@ module PaaS
                   text += " quiet" if user[:quiet]
                   text += " ]"
                 end
+                text += " #{Time.parse(presence[:created].to_s).time_since(Time.now)} ago"
                 Bot.announce(from, text)
               rescue 
                 Bot.announce(from, "status: unknown")
