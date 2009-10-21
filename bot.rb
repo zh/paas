@@ -194,6 +194,7 @@ module PaaS
               Bot.announce(from, "Please accept the authorization request.")
             when "ON", "OFF", "on", "off":
               begin
+                mode = ""
                 DB.transaction do
                   user = DB[:users].filter(:jid => from)
                   mode = (cmdline[0].downcase == 'on') ? true : false
@@ -205,6 +206,7 @@ module PaaS
               end
             when "QUIET", "VERBOSE", "quiet", "verbose":
               begin
+                mode = ""
                 DB.transaction do
                   user = DB[:users].filter(:jid => from)
                   mode = (cmdline[0].downcase == 'quiet') ? true : false
