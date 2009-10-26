@@ -8,6 +8,8 @@ require 'zlib'
 require 'digest/sha1'
 require 'json'
 require 'atom/pub'
+require 'xmpp4r'
+require 'xmpp4r/vcard'
 require 'myconfig'
 require 'global'
 
@@ -21,24 +23,48 @@ module PaaS
   
     configure do
       DB = Sequel.connect(ENV['DATABASE_URL'] || "sqlite://#{PaaS::DB_FILE}")
+
+      # user by JID or nick
+      def param2user(nick_or_jid)
+        if nick_or_jid.include?('@')
+          user = DB[:users].filter(:jid => nick_or_jid).first
+        else
+          user = DB[:users].filter(:nick => nick_or_jid).first
+        end
+        user
+      end
     end
 
+    get '/photo/:nick_or_jid/?' do
+      begin
+        user = param2user(params[:nick_or_jid])
+        client = Jabber::Client.new(Jabber::JID.new(PaaS::USER))
+        client.connect
+        client.auth(PaaS::PASS)
+        vcard = Jabber::Vcard::Helper.new(client).get(user[:jid])
+        type = vcard['PHOTO/TYPE']
+        if type
+          content_type type
+          return vcard.photo_binval
+        else
+          raise "no vcard photo set"
+        end
+      rescue
+        content_type 'image/png'
+        File.open(File.join("public","images","nobody.png"))
+      end
+    end
 
     get '/last/:nick_or_jid/:type/?' do
+      content_type 'application/json; charset=utf-8'
       begin
-        # user by JID or nick
-        if params[:nick_or_jid].include?('@')
-          user = DB[:users].filter(:jid => params[:nick_or_jid]).first
-        else
-          user = DB[:users].filter(:nick => params[:nick_or_jid]).first
-        end
+        user = param2user(params[:nick_or_jid])
         presence = DB[:presences].filter(:user_id => user[:id]).order(:created).last
         if params[:type] == 'image'
           content_type 'image/png'
           fname = STATUS.include?(presence[:status]) ? presence[:status] : "unknown"
           File.open(File.join("public","images","#{fname}.png"))
         else
-          content_type 'application/json; charset=utf-8'
           tm = presence[:created].to_s
           text = {
             :time => Time.parse(tm).getgm.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -50,6 +76,7 @@ module PaaS
         end
       rescue
         if params[:type] == 'image'
+          content_type 'image/png'
           File.open(File.join("public","images","unknown.png"))
         else
           text = {
@@ -63,12 +90,7 @@ module PaaS
 
     get '/atom/:nick_or_jid/?' do
       begin
-        # user by JID or nick
-        if params[:nick_or_jid].include?('@')
-          user = DB[:users].filter(:jid => params[:nick_or_jid]).first
-        else
-          user = DB[:users].filter(:nick => params[:nick_or_jid]).first
-        end
+        user = param2user(params[:nick_or_jid])
         content_type 'application/atom+xml', :charset => 'utf-8'
         # cache for 30 sec
         headers 'Cache-Control' => 'max-age=30, public',
@@ -105,8 +127,7 @@ module PaaS
           end
         end
         feed.to_xml
-      rescue Exception => e
-        p e.to_s
+      rescue
         throw :halt, [404, "Not Found"]
       end
     end

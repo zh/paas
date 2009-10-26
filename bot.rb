@@ -89,7 +89,18 @@ module PaaS
         puts e.to_s
         set_deferred_status(:failed)
       end
+    end
 
+    def do_send(args = {})
+      begin
+        raise "Missing arguments for do_send()" unless (args[:jid] and args[:message])
+        Bot.announce(args[:jid], [args[:message]])
+        sleep(0.05)
+        set_deferred_status(:succeeded)
+      rescue Exception => e
+        puts e.to_s
+        set_deferred_status(:failed)
+      end
     end
   end
 
@@ -99,12 +110,13 @@ module PaaS
       body = "\n#{NAME} v#{VERSION}\nCommands:\n"
       body += "HELP, H, help, ? : List all local commands\n"
       body += "PING, P, ping : Connection test\n"
+      body += "LOGIN, L, login : register in the system\n"
       body += "ONLINE, O, online : Online users list\n"
+      body += "STAT[US], S, stat[us] [JID] : get JID status - 'away' etc.\n"
+      body += "NICK, N, nick [name] : change/show your nick (2-16 chars, [A-Za-z0-9_])\n"
+      body += "MSG, M, msg {nick} {text} : Direct message {text} to user {nick}\n"
       body += "ON/OFF, on/off : Enable/disable presences sharing\n"
       body += "QUIET/VERBOSE, quiet/verbose : Trac all or only XA presences\n"
-      body += "STAT[US], S, stat[us] [JID] : get JID status - 'away' etc.\n"
-      body += "LOGIN, L, login : register in the system\n"
-      body += "NICK, N, nick [name] : change/show your nick (2-16 chars, [A-Za-z0-9_])\n"
       body
     end
 
@@ -267,6 +279,24 @@ module PaaS
                 Bot.announce(from, text)
               rescue 
                 Bot.announce(from, "status: unknown")
+                next
+              end
+            when "MSG", "M", "msg":
+              begin
+                raise "missing arguments" unless cmdline.length > 2
+                user = DB[:users].filter(:jid => from).first
+                args = {}
+                args[:jid] = DB[:users].filter(:nick => cmdline[1]).first[:jid]
+                args[:message]  = "message from #{user[:nick]}:\n" 
+                args[:message] += msg.body.sub(cmdline[0],"").sub(cmdline[1],"").strip
+                EM.spawn do
+                  task = Task.new
+                  task.callback { Bot.announce(from, "message to '#{cmdline[1]}' sent") }
+                  task.errback { raise "do_send() error" }
+                  task.do_send(args)
+                end.notify
+              rescue Exception => e 
+                Bot.announce(from, "message not sent: #{e.to_s}")
                 next
               end
             else

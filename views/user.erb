@@ -7,7 +7,9 @@
   <link rel="stylesheet" type="text/css" href="/css/styles.css">
 </head>
 <body>
-<h2>Latest <%= @user[:nick] %> presence changes</h2>
+<img src="/photo/<%= @user[:nick] %>" title="<%= @user[:nick] %>" />
+<big><%= @user[:nick] %></big>
+<h2>Latest presence changes</h2>
 <div id="entries">
 <ul>
 <% @presences.each do |p| %>
