@@ -14,7 +14,7 @@
 
 ### Install
 
- * Needed gems: eventmachine, xmpp4r-simple, json, ratom, httpclient, sequel, sinatra
+ * Needed gems: eventmachine, xmpp4r, xmpp4r-simple, json, ratom, httpclient, sequel, sinatra
  * Copy __myconfig.rb.dist__ to __myconfig.rb__ and adjust your settings
  * Start the bot (this will create also database [sqlite3], if missing):  __ruby ./bot.rb__
  * Start the API:
@@ -39,6 +39,7 @@
 
  * __/last/:nick/:type__ - Text/image (.png) user status (status, message, timestamp)
  * __/atom/:nick__ - Atom feed with latest 10 presences (pinging PuSH hub on update)
+ * __/photo/:nick__ - Return the XMPP Vcard photo ("PHOTO/BINVAL")
  * __/json__ (optional __?callback=...__ parameter) JSON/JSONP with latest 10 presences
  * __/stream__ and __/user/:nick__ - demo services
 
@@ -46,11 +47,12 @@
 
  * __HELP, H, help, ?__ : List all local commands
  * __PING, P, ping__ : Connection test
+ * __LOGIN, L, login__ : Register in the system
  * __ONLINE, O, online__ : Online users list
+ * __STAT[US], S, stat[us] [JID]__ : Get JID status - 'away' etc.
+ * __NICK, N, nick [name]__ : Change/show your nick (2-16 chars, [A-Za-z0-9_])
+ * __MSG, M, msg {nick} {text}__ : Direct message {text} to user {nick}
  * __ON/OFF, on/off__ : Enable/disable presences sharing
  * __QUIET/VERBOSE, quiet/verbose__ : Trac all or only XA presences
- * __STAT[US], S, stat[us] [JID]__ : get JID status - 'away' etc.
- * __LOGIN, L, login__ : register in the system
- * __NICK, N, nick [name]__ : change/show your nick (2-16 chars, [A-Za-z0-9_])
 
 You can make your own install, or use the __status@zhware.net__ bot and [http://status.zhware.net/](http://status.zhware.net/) URL for API calls and to see the results.
