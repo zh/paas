@@ -16,9 +16,8 @@ require 'global'
 module PaaS
 
   class App < Sinatra::Default
-  
-    set :sessions, false
-    set :run, false
+    disable :sessions
+    disable :run 
     set :environment, ENV['RACK_ENV']
   
     configure do
@@ -182,5 +181,5 @@ module PaaS
 end
 
 if __FILE__ == $0
-  PaaS::App.run!
+  PaaS::App.run
 end
