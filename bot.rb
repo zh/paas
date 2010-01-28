@@ -193,6 +193,11 @@ module PaaS
 
         end
 
+        # send presence every minute
+        EM::PeriodicTimer.new(60) do
+          @@xmpp.status(nil, "Available")
+        end
+
 
         EM::PeriodicTimer.new(0.05) do
 
