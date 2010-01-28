@@ -129,7 +129,9 @@ module PaaS
       end
     end
 
-    def self.run
+    def self.run(options)
+      puts "run options: #{options.inspect}" if PaaS::DEBUG
+
       @@xmpp = Jabber::Simple.new(USER, PASS)
       @@master = MASTERS[0]
 
@@ -139,6 +141,11 @@ module PaaS
 
       EM.epoll   # Only on Linux 2.6.x
       EM.run do
+        if options[:with_api] == true
+          puts "starting web API on port #{options[:port]}..." if PaaS::DEBUG
+          require 'api'
+          PaaS::App.run!(:port => options[:port])
+        end  
 
         EM::PeriodicTimer.new(5) do
 
@@ -312,5 +319,13 @@ end
 
 if __FILE__ == $0
   trap("INT") { EM.stop }
-  PaaS::Bot.run
+  options = { :port => PaaS::API_PORT, :with_api => false }
+  if ARGV.any?
+    require 'optparse'
+    OptionParser.new { |op|
+      op.on('-a')      { |val| options[:with_api] = true }
+      op.on('-p port') { |val| options[:port] = val.to_i }
+    }.parse!(ARGV.dup)
+  end
+  PaaS::Bot.run(options)
 end  

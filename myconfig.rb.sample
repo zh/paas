@@ -12,6 +12,7 @@ module PaaS
   BASE = "/".freeze
   HTTPBASE = "http://#{DOMAIN}#{BASE}".freeze
   PUSHUB = "https://pubsubhubbub.appspot.com/".freeze
+  API_PORT = 8888
   PAGE = 20
   FEED_PAGE = 10
   
