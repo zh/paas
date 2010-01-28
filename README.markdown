@@ -18,8 +18,9 @@
  * Copy __myconfig.rb.dist__ to __myconfig.rb__ and adjust your settings
  * Start the bot (this will create also database [sqlite3], if missing):  __ruby ./bot.rb__
  * Start the API:
-  * via [rackup](http://wiki.github.com/rack/rack/tutorial-rackup-howto): __rackup -p 8080__
-  * standalone: __ruby ./api.rb -p 8080__
+   * via [rackup](http://wiki.github.com/rack/rack/tutorial-rackup-howto): __rackup -p 8080__
+   * standalone: __ruby ./api.rb -p 8080__
+ * Start the bot AND the API: __ruby ./bot.rb -a -p 8080__
 
 ### Usage
 
